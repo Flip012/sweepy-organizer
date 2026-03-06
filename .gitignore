@@ -1,0 +1,27 @@
+# Flutter
+app/.dart_tool/
+app/build/
+app/.flutter-plugins
+app/.flutter-plugins-dependencies
+app/.packages
+
+# Server
+server/.dart_tool/
+server/build/
+server/.packages
+
+# IDE
+.idea/
+.vscode/
+*.iml
+
+# Environment
+.env
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Pub
+.pub-cache/
+.pub/
