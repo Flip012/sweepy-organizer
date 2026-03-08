@@ -115,19 +115,30 @@ class NativeAuthService implements AuthService {
 
       await _openBrowser(authUri.toString());
 
-      final request = await server.first;
-      final code = request.uri.queryParameters['code'];
-
-      request.response
-        ..statusCode = 200
-        ..headers.contentType = ContentType.html
-        ..write(
-          '<!DOCTYPE html><html><body>'
-          '<h1>Login erfolgreich</h1>'
-          '<p>Du kannst dieses Fenster schließen.</p>'
-          '</body></html>',
-        );
-      await request.response.close();
+      // Wait for the actual callback request (ignore favicon etc.)
+      String? code;
+      await for (final request in server) {
+        if (request.uri.path == '/callback' &&
+            request.uri.queryParameters.containsKey('code')) {
+          code = request.uri.queryParameters['code'];
+          request.response
+            ..statusCode = 200
+            ..headers.contentType = ContentType.html
+            ..write(
+              '<!DOCTYPE html><html><body>'
+              '<h1>Login erfolgreich</h1>'
+              '<p>Du kannst dieses Fenster schließen.</p>'
+              '</body></html>',
+            );
+          await request.response.close();
+          break;
+        } else {
+          request.response
+            ..statusCode = 404
+            ..write('Not found');
+          await request.response.close();
+        }
+      }
 
       if (code == null) return null;
 
