@@ -7,7 +7,7 @@ class AppConstants {
 
   static const oidcIssuer = String.fromEnvironment(
     'OIDC_ISSUER',
-    defaultValue: 'http://localhost:9000/application/o/sweepy/',
+    defaultValue: 'https://auth.familyschulze.de/application/o/sweepy/',
   );
 
   static const oidcClientId = String.fromEnvironment(
