@@ -5,8 +5,8 @@ services:
       - "8080:8080"
     environment:
       DATABASE_URL: postgresql://sweepy:sweepy@db:5432/sweepy
-      AUTHENTIK_ISSUER: ${AUTHENTIK_ISSUER:-http://authentik-server:9000/application/o/sweepy/}
-      AUTHENTIK_JWKS_URI: ${AUTHENTIK_JWKS_URI:-http://authentik-server:9000/application/o/sweepy/jwks/}
+      AUTHENTIK_ISSUER: ${AUTHENTIK_ISSUER}
+      AUTHENTIK_JWKS_URI: ${AUTHENTIK_JWKS_URI}
       CORS_ORIGIN: ${CORS_ORIGIN:-http://localhost:3000}
     depends_on:
       db:
@@ -29,49 +29,5 @@ services:
       timeout: 5s
       retries: 5
 
-  authentik-server:
-    image: ghcr.io/goauthentik/server:latest
-    command: server
-    environment:
-      AUTHENTIK_SECRET_KEY: ${AUTHENTIK_SECRET_KEY:-change-me-to-a-random-string}
-      AUTHENTIK_POSTGRESQL__HOST: authentik-db
-      AUTHENTIK_POSTGRESQL__NAME: authentik
-      AUTHENTIK_POSTGRESQL__USER: authentik
-      AUTHENTIK_POSTGRESQL__PASSWORD: ${AUTHENTIK_DB_PASSWORD:-authentik}
-      AUTHENTIK_REDIS__HOST: redis
-    ports:
-      - "9000:9000"
-      - "9443:9443"
-    depends_on:
-      - authentik-db
-      - redis
-
-  authentik-worker:
-    image: ghcr.io/goauthentik/server:latest
-    command: worker
-    environment:
-      AUTHENTIK_SECRET_KEY: ${AUTHENTIK_SECRET_KEY:-change-me-to-a-random-string}
-      AUTHENTIK_POSTGRESQL__HOST: authentik-db
-      AUTHENTIK_POSTGRESQL__NAME: authentik
-      AUTHENTIK_POSTGRESQL__USER: authentik
-      AUTHENTIK_POSTGRESQL__PASSWORD: ${AUTHENTIK_DB_PASSWORD:-authentik}
-      AUTHENTIK_REDIS__HOST: redis
-    depends_on:
-      - authentik-db
-      - redis
-
-  authentik-db:
-    image: postgres:16-alpine
-    volumes:
-      - authentik-pgdata:/var/lib/postgresql/data
-    environment:
-      POSTGRES_DB: authentik
-      POSTGRES_USER: authentik
-      POSTGRES_PASSWORD: ${AUTHENTIK_DB_PASSWORD:-authentik}
-
-  redis:
-    image: redis:7-alpine
-
 volumes:
   pgdata:
-  authentik-pgdata:
