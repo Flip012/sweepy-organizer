@@ -17,11 +17,11 @@ class AuthService {
   Future<void> initialize() async {
     _issuer =
         Platform.environment['AUTHENTIK_ISSUER'] ??
-        'http://localhost:9000/application/o/sweepy/';
+        'https://auth.familyschulze.de/application/o/sweepy/';
 
     final jwksUri =
         Platform.environment['AUTHENTIK_JWKS_URI'] ??
-        'http://localhost:9000/application/o/sweepy/jwks/';
+        'https://auth.familyschulze.de/application/o/sweepy/jwks/';
 
     _keyStore = JsonWebKeyStore()
       ..addKeySetUrl(Uri.parse(jwksUri));
