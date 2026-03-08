@@ -25,6 +25,12 @@ class NativeAuthService implements AuthService {
   String get _desktopRedirectUri =>
       'http://localhost:${AppConstants.oidcDesktopCallbackPort}/callback';
 
+  /// Authentik uses shared endpoints under /application/o/ (not per-app slug).
+  String get _oidcBaseUrl {
+    final issuerUri = Uri.parse(AppConstants.oidcIssuer);
+    return '${issuerUri.scheme}://${issuerUri.authority}/application/o';
+  }
+
   @override
   Future<AuthResult?> tryRestore() async {
     final accessToken = await _storage.read(key: _accessTokenKey);
@@ -102,7 +108,7 @@ class NativeAuthService implements AuthService {
     );
 
     try {
-      final authEndpoint = '${AppConstants.oidcIssuer}authorize/';
+      final authEndpoint = '$_oidcBaseUrl/authorize/';
       final authUri = Uri.parse(authEndpoint).replace(queryParameters: {
         'response_type': 'code',
         'client_id': AppConstants.oidcClientId,
@@ -152,7 +158,7 @@ class NativeAuthService implements AuthService {
     String code,
     String codeVerifier,
   ) async {
-    final tokenEndpoint = '${AppConstants.oidcIssuer}token/';
+    final tokenEndpoint = '$_oidcBaseUrl/token/';
     final response = await http.post(
       Uri.parse(tokenEndpoint),
       headers: {'Content-Type': 'application/x-www-form-urlencoded'},
@@ -180,7 +186,7 @@ class NativeAuthService implements AuthService {
 
   Future<AuthResult?> _desktopTokenRefresh(String refreshToken) async {
     try {
-      final tokenEndpoint = '${AppConstants.oidcIssuer}token/';
+      final tokenEndpoint = '$_oidcBaseUrl/token/';
       final response = await http.post(
         Uri.parse(tokenEndpoint),
         headers: {'Content-Type': 'application/x-www-form-urlencoded'},

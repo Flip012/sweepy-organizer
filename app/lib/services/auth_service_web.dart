@@ -16,6 +16,12 @@ class WebAuthService implements AuthService {
   static const _refreshTokenKey = 'refresh_token';
   static const _codeVerifierKey = 'pkce_code_verifier';
 
+  /// Authentik uses shared endpoints under /application/o/ (not per-app slug).
+  String get _oidcBaseUrl {
+    final issuerUri = Uri.parse(AppConstants.oidcIssuer);
+    return '${issuerUri.scheme}://${issuerUri.authority}/application/o';
+  }
+
   @override
   Future<AuthResult?> tryRestore() async {
     // Check if we have a callback code in the URL
@@ -30,7 +36,7 @@ class WebAuthService implements AuthService {
 
     // Try token refresh
     try {
-      final tokenEndpoint = '${AppConstants.oidcIssuer}token/';
+      final tokenEndpoint = '$_oidcBaseUrl/token/';
       final response = await http.post(
         Uri.parse(tokenEndpoint),
         headers: {'Content-Type': 'application/x-www-form-urlencoded'},
@@ -69,7 +75,7 @@ class WebAuthService implements AuthService {
     if (codeVerifier == null) return null;
 
     // Exchange code for tokens
-    final tokenEndpoint = '${AppConstants.oidcIssuer}token/';
+    final tokenEndpoint = '$_oidcBaseUrl/token/';
     final response = await http.post(
       Uri.parse(tokenEndpoint),
       headers: {'Content-Type': 'application/x-www-form-urlencoded'},
@@ -107,7 +113,7 @@ class WebAuthService implements AuthService {
     final prefs = await SharedPreferences.getInstance();
     await prefs.setString(_codeVerifierKey, codeVerifier);
 
-    final authEndpoint = '${AppConstants.oidcIssuer}authorize/';
+    final authEndpoint = '$_oidcBaseUrl/authorize/';
     final authUri = Uri.parse(authEndpoint).replace(queryParameters: {
       'response_type': 'code',
       'client_id': AppConstants.oidcClientId,
