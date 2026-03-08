@@ -20,5 +20,10 @@ class AppConstants {
     defaultValue: 'com.sweepy.app://callback',
   );
 
+  static const oidcWebRedirectUri = String.fromEnvironment(
+    'OIDC_WEB_REDIRECT_URI',
+    defaultValue: 'http://localhost:3000/callback',
+  );
+
   static const oidcScopes = ['openid', 'profile', 'email', 'offline_access'];
 }
