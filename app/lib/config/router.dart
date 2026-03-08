@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
@@ -16,11 +17,18 @@ import '../screens/tasks/task_history_screen.dart';
 import '../widgets/shell_scaffold.dart';
 
 final routerProvider = Provider<GoRouter>((ref) {
-  final authState = ref.watch(authProvider);
+  // Use a ValueNotifier to trigger GoRouter refresh without recreating it.
+  // ref.watch would recreate the GoRouter on every auth state change,
+  // resetting navigation to initialLocation.
+  final refreshNotifier = ValueNotifier<int>(0);
+  ref.listen(authProvider, (prev, next) => refreshNotifier.value++);
+  ref.onDispose(() => refreshNotifier.dispose());
 
   return GoRouter(
     initialLocation: '/',
+    refreshListenable: refreshNotifier,
     redirect: (context, state) {
+      final authState = ref.read(authProvider);
       final isAuth = authState.isAuthenticated;
       final isLoading = authState.isLoading;
       final isLoginRoute = state.matchedLocation == '/login';
