@@ -25,5 +25,10 @@ class AppConstants {
     defaultValue: 'http://localhost:3000/callback',
   );
 
+  static const oidcDesktopCallbackPort = int.fromEnvironment(
+    'OIDC_DESKTOP_CALLBACK_PORT',
+    defaultValue: 17355,
+  );
+
   static const oidcScopes = ['openid', 'profile', 'email', 'offline_access'];
 }
