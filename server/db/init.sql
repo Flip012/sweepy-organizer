@@ -3,7 +3,7 @@
 CREATE EXTENSION IF NOT EXISTS "pgcrypto";
 
 CREATE TABLE user_profiles (
-  id UUID PRIMARY KEY,
+  id TEXT PRIMARY KEY,
   email TEXT NOT NULL UNIQUE,
   display_name TEXT NOT NULL,
   authentik_group_id TEXT NOT NULL,
@@ -32,8 +32,8 @@ CREATE TABLE tasks (
   difficulty INT NOT NULL DEFAULT 1 CHECK (difficulty BETWEEN 1 AND 3),
   frequency_days INT NOT NULL DEFAULT 7,
   last_completed_at TIMESTAMPTZ,
-  last_completed_by UUID REFERENCES user_profiles(id) ON DELETE SET NULL,
-  assigned_to UUID REFERENCES user_profiles(id) ON DELETE SET NULL,
+  last_completed_by TEXT REFERENCES user_profiles(id) ON DELETE SET NULL,
+  assigned_to TEXT REFERENCES user_profiles(id) ON DELETE SET NULL,
   created_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
 );
 
@@ -43,7 +43,7 @@ CREATE TABLE task_logs (
   task_name TEXT NOT NULL,
   room_id UUID REFERENCES rooms(id) ON DELETE SET NULL,
   household_id TEXT NOT NULL,
-  completed_by UUID NOT NULL REFERENCES user_profiles(id) ON DELETE CASCADE,
+  completed_by TEXT NOT NULL REFERENCES user_profiles(id) ON DELETE CASCADE,
   completed_by_name TEXT NOT NULL,
   points_earned INT NOT NULL,
   completed_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
