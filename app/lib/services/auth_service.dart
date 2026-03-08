@@ -1,6 +1,6 @@
 import 'auth_service_stub.dart'
     if (dart.library.io) 'auth_service_mobile.dart'
-    if (dart.library.js_interop) 'auth_service_web.dart' as platform;
+    if (dart.library.html) 'auth_service_web.dart' as platform;
 
 class AuthResult {
   final String accessToken;
