@@ -1,24 +1,15 @@
 class TaskLog {
-  final String id;
-  final String? taskId;
-  final String taskName;
-  final String? roomId;
-  final String householdId;
-  final String completedBy;
-  final String completedByName;
-  final int pointsEarned;
-  final DateTime completedAt;
 
   const TaskLog({
     required this.id,
-    this.taskId,
     required this.taskName,
-    this.roomId,
     required this.householdId,
     required this.completedBy,
     required this.completedByName,
     required this.pointsEarned,
     required this.completedAt,
+    this.taskId,
+    this.roomId,
   });
 
   factory TaskLog.fromRow(Map<String, dynamic> row) {
@@ -34,6 +25,15 @@ class TaskLog {
       completedAt: DateTime.parse(row['completed_at'].toString()),
     );
   }
+  final String id;
+  final String? taskId;
+  final String taskName;
+  final String? roomId;
+  final String householdId;
+  final String completedBy;
+  final String completedByName;
+  final int pointsEarned;
+  final DateTime completedAt;
 
   Map<String, dynamic> toJson() => {
         'id': id,

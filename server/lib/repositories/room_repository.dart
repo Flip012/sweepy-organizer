@@ -1,14 +1,16 @@
-import '../models/room.dart';
-import '../services/database_service.dart';
+import 'package:server/models/room.dart';
+import 'package:server/services/database_service.dart';
 
 class RoomRepository {
-  final DatabaseService _db;
 
   RoomRepository(this._db);
+  final DatabaseService _db;
 
   Future<List<Room>> findByHousehold(String householdId) async {
     final result = await _db.query(
-      'SELECT * FROM rooms WHERE household_id = @householdId ORDER BY sort_order, created_at',
+      'SELECT * FROM rooms '
+      'WHERE household_id = @householdId '
+      'ORDER BY sort_order, created_at',
       parameters: {'householdId': householdId},
     );
     return result.map((row) => Room.fromRow(row.toColumnMap())).toList();
@@ -71,7 +73,10 @@ class RoomRepository {
     if (sets.isEmpty) return findById(id, householdId);
 
     final result = await _db.query(
-      'UPDATE rooms SET ${sets.join(', ')} WHERE id = @id AND household_id = @householdId RETURNING *',
+      'UPDATE rooms SET ${sets.join(', ')} '
+      'WHERE id = @id '
+      'AND household_id = @householdId '
+      'RETURNING *',
       parameters: params,
     );
     if (result.isEmpty) return null;

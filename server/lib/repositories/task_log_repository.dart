@@ -1,10 +1,10 @@
-import '../models/task_log.dart';
-import '../services/database_service.dart';
+import 'package:server/models/task_log.dart';
+import 'package:server/services/database_service.dart';
 
 class TaskLogRepository {
-  final DatabaseService _db;
 
   TaskLogRepository(this._db);
+  final DatabaseService _db;
 
   Future<TaskLog> create({
     required String taskId,

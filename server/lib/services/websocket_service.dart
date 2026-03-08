@@ -27,7 +27,11 @@ class WebSocketService {
   }
 
   /// Broadcast an event to all clients in a household.
-  void broadcast(String householdId, String eventType, Map<String, dynamic> data) {
+  void broadcast(
+    String householdId,
+    String eventType,
+    Map<String, dynamic> data,
+  ) {
     final message = jsonEncode({
       'type': eventType,
       'data': data,

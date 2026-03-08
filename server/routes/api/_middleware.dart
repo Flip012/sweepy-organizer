@@ -2,8 +2,8 @@ import 'package:dart_frog/dart_frog.dart';
 import 'package:server/repositories/user_repository.dart';
 import 'package:server/services/auth_service.dart';
 
-/// Middleware that validates the Bearer token and ensures the user profile exists.
-/// Adds the AuthUser to the request context.
+/// Validates the Bearer token and ensures the user
+/// profile exists. Adds AuthUser to the request context.
 Handler middleware(Handler handler) {
   return (context) async {
     final authHeader = context.request.headers['Authorization'];

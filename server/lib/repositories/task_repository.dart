@@ -1,12 +1,15 @@
-import '../models/task.dart';
-import '../services/database_service.dart';
+import 'package:server/models/task.dart';
+import 'package:server/services/database_service.dart';
 
 class TaskRepository {
-  final DatabaseService _db;
 
   TaskRepository(this._db);
+  final DatabaseService _db;
 
-  Future<List<Task>> findByHousehold(String householdId, {String? roomId}) async {
+  Future<List<Task>> findByHousehold(
+    String householdId, {
+    String? roomId,
+  }) async {
     var sql = 'SELECT * FROM tasks WHERE household_id = @householdId';
     final params = <String, dynamic>{'householdId': householdId};
 
@@ -90,14 +93,21 @@ class TaskRepository {
     if (sets.isEmpty) return findById(id, householdId);
 
     final result = await _db.query(
-      'UPDATE tasks SET ${sets.join(', ')} WHERE id = @id AND household_id = @householdId RETURNING *',
+      'UPDATE tasks SET ${sets.join(', ')} '
+      'WHERE id = @id '
+      'AND household_id = @householdId '
+      'RETURNING *',
       parameters: params,
     );
     if (result.isEmpty) return null;
     return Task.fromRow(result.first.toColumnMap());
   }
 
-  Future<Task?> markCompleted(String id, String householdId, String userId) async {
+  Future<Task?> markCompleted(
+    String id,
+    String householdId,
+    String userId,
+  ) async {
     final result = await _db.query(
       '''
       UPDATE tasks SET

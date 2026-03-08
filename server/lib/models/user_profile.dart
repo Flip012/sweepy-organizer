@@ -1,26 +1,16 @@
 class UserProfile {
-  final String id;
-  final String email;
-  final String displayName;
-  final String authentikGroupId;
-  final int totalPoints;
-  final int currentStreak;
-  final int longestStreak;
-  final DateTime? lastCompletedDate;
-  final int dailyEffortLimit;
-  final DateTime createdAt;
 
   const UserProfile({
     required this.id,
     required this.email,
     required this.displayName,
     required this.authentikGroupId,
+    required this.createdAt,
     this.totalPoints = 0,
     this.currentStreak = 0,
     this.longestStreak = 0,
     this.lastCompletedDate,
     this.dailyEffortLimit = 6,
-    required this.createdAt,
   });
 
   factory UserProfile.fromRow(Map<String, dynamic> row) {
@@ -39,6 +29,16 @@ class UserProfile {
       createdAt: DateTime.parse(row['created_at'].toString()),
     );
   }
+  final String id;
+  final String email;
+  final String displayName;
+  final String authentikGroupId;
+  final int totalPoints;
+  final int currentStreak;
+  final int longestStreak;
+  final DateTime? lastCompletedDate;
+  final int dailyEffortLimit;
+  final DateTime createdAt;
 
   Map<String, dynamic> toJson() => {
         'id': id,

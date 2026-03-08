@@ -3,16 +3,16 @@ import 'dart:io';
 import 'package:postgres/postgres.dart';
 
 class DatabaseService {
-  DatabaseService._();
-  static DatabaseService? _instance;
-  Pool? _pool;
-
-  static DatabaseService get instance {
+  factory DatabaseService.instance() {
     _instance ??= DatabaseService._();
     return _instance!;
   }
 
-  Pool get pool {
+  DatabaseService._();
+  static DatabaseService? _instance;
+  Pool<dynamic>? _pool;
+
+  Pool<dynamic> get pool {
     if (_pool == null) throw StateError('Database not initialized');
     return _pool!;
   }
@@ -33,7 +33,7 @@ class DatabaseService {
 
     _pool = Pool.withEndpoints(
       [endpoint],
-      settings: PoolSettings(
+      settings: const PoolSettings(
         maxConnectionCount: 10,
         sslMode: SslMode.disable,
       ),

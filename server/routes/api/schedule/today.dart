@@ -6,7 +6,10 @@ import 'package:server/services/scheduler_service.dart';
 
 Future<Response> onRequest(RequestContext context) async {
   if (context.request.method != HttpMethod.get) {
-    return Response.json(statusCode: 405, body: {'error': 'Method not allowed'});
+    return Response.json(
+      statusCode: 405,
+      body: {'error': 'Method not allowed'},
+    );
   }
 
   final authUser = context.read<AuthUser>();
@@ -23,7 +26,10 @@ Future<Response> onRequest(RequestContext context) async {
     dailyEffortLimit: profile?.dailyEffortLimit ?? 6,
   );
 
-  final totalDifficulty = scheduled.fold<int>(0, (sum, t) => sum + t.difficulty);
+  final totalDifficulty = scheduled.fold<int>(
+    0,
+    (sum, t) => sum + t.difficulty,
+  );
 
   return Response.json(
     body: {

@@ -16,8 +16,8 @@ Handler middleware(Handler handler) {
   return (context) async {
     // Initialize services once
     if (!_initialized) {
-      await DatabaseService.instance.initialize();
-      await AuthService.instance.initialize();
+      await DatabaseService.instance().initialize();
+      await AuthService.instance().initialize();
       _initialized = true;
     }
 
@@ -43,8 +43,8 @@ Future<Response> _handleCors(
   }
 
   final response = await handler
-      .use(provider<DatabaseService>((_) => DatabaseService.instance))
-      .use(provider<AuthService>((_) => AuthService.instance))
+      .use(provider<DatabaseService>((_) => DatabaseService.instance()))
+      .use(provider<AuthService>((_) => AuthService.instance()))
       .use(provider<WebSocketService>((_) => WebSocketService.instance))
       .use(provider<SchedulerService>((_) => const SchedulerService()))
       .use(

@@ -13,8 +13,15 @@ Future<Response> onRequest(RequestContext context) async {
       return _get(authUser, userRepo);
     case HttpMethod.put:
       return _put(context, authUser, userRepo);
-    default:
-      return Response.json(statusCode: 405, body: {'error': 'Method not allowed'});
+    case HttpMethod.delete:
+    case HttpMethod.head:
+    case HttpMethod.options:
+    case HttpMethod.patch:
+    case HttpMethod.post:
+      return Response.json(
+        statusCode: 405,
+        body: {'error': 'Method not allowed'},
+      );
   }
 }
 

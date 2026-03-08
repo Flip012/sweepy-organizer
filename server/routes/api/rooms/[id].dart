@@ -16,8 +16,14 @@ Future<Response> onRequest(RequestContext context, String id) async {
       return _update(context, authUser, roomRepo, id);
     case HttpMethod.delete:
       return _delete(context, authUser, roomRepo, id);
-    default:
-      return Response.json(statusCode: 405, body: {'error': 'Method not allowed'});
+    case HttpMethod.head:
+    case HttpMethod.options:
+    case HttpMethod.patch:
+    case HttpMethod.post:
+      return Response.json(
+        statusCode: 405,
+        body: {'error': 'Method not allowed'},
+      );
   }
 }
 

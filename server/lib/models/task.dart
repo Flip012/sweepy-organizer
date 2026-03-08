@@ -1,26 +1,16 @@
 class Task {
-  final String id;
-  final String roomId;
-  final String householdId;
-  final String name;
-  final int difficulty;
-  final int frequencyDays;
-  final DateTime? lastCompletedAt;
-  final String? lastCompletedBy;
-  final String? assignedTo;
-  final DateTime createdAt;
 
   const Task({
     required this.id,
     required this.roomId,
     required this.householdId,
     required this.name,
+    required this.createdAt,
     this.difficulty = 1,
     this.frequencyDays = 7,
     this.lastCompletedAt,
     this.lastCompletedBy,
     this.assignedTo,
-    required this.createdAt,
   });
 
   factory Task.fromRow(Map<String, dynamic> row) {
@@ -39,6 +29,16 @@ class Task {
       createdAt: DateTime.parse(row['created_at'].toString()),
     );
   }
+  final String id;
+  final String roomId;
+  final String householdId;
+  final String name;
+  final int difficulty;
+  final int frequencyDays;
+  final DateTime? lastCompletedAt;
+  final String? lastCompletedBy;
+  final String? assignedTo;
+  final DateTime createdAt;
 
   Map<String, dynamic> toJson() => {
         'id': id,
@@ -55,7 +55,7 @@ class Task {
 
   /// Calculate how overdue this task is (ratio > 1.0 means past due)
   double get overdueRatio {
-    if (lastCompletedAt == null) return 999.0;
+    if (lastCompletedAt == null) return 999;
     final daysSince =
         DateTime.now().difference(lastCompletedAt!).inHours / 24.0;
     return daysSince / frequencyDays;

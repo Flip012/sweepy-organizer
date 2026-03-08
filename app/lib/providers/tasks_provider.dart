@@ -33,6 +33,7 @@ class TasksNotifier extends AsyncNotifier<List<Task>> {
       'name': name,
       'difficulty': difficulty,
       'frequencyDays': frequencyDays,
+      // ignore: use_null_aware_elements
       if (assignedTo != null) 'assignedTo': assignedTo,
     });
     final task = Task.fromJson(data);

@@ -4,9 +4,9 @@ import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 
 import '../config/constants.dart';
 
-final authProvider = StateNotifierProvider<AuthNotifier, AuthState>((ref) {
-  return AuthNotifier();
-});
+final authProvider = NotifierProvider<AuthNotifier, AuthState>(
+  AuthNotifier.new,
+);
 
 class AuthState {
   final bool isAuthenticated;
@@ -35,15 +35,17 @@ class AuthState {
       );
 }
 
-class AuthNotifier extends StateNotifier<AuthState> {
+class AuthNotifier extends Notifier<AuthState> {
   final _appAuth = const FlutterAppAuth();
   final _storage = const FlutterSecureStorage();
 
   static const _accessTokenKey = 'access_token';
   static const _refreshTokenKey = 'refresh_token';
 
-  AuthNotifier() : super(const AuthState()) {
+  @override
+  AuthState build() {
     _tryRestore();
+    return const AuthState();
   }
 
   Future<void> _tryRestore() async {

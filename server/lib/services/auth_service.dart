@@ -4,15 +4,15 @@ import 'package:jose/jose.dart';
 
 /// Validates OIDC tokens from Authentik and extracts user info + groups.
 class AuthService {
-  AuthService._();
-  static AuthService? _instance;
-  JsonWebKeyStore? _keyStore;
-  String? _issuer;
-
-  static AuthService get instance {
+  factory AuthService.instance() {
     _instance ??= AuthService._();
     return _instance!;
   }
+
+  AuthService._();
+  static AuthService? _instance;
+  late JsonWebKeyStore _keyStore;
+  String? _issuer;
 
   Future<void> initialize() async {
     _issuer =
@@ -23,18 +23,20 @@ class AuthService {
         Platform.environment['AUTHENTIK_JWKS_URI'] ??
         'http://localhost:9000/application/o/sweepy/jwks/';
 
-    _keyStore = JsonWebKeyStore()..addKeySetUrl(Uri.parse(jwksUri));
+    _keyStore = JsonWebKeyStore()
+      ..addKeySetUrl(Uri.parse(jwksUri));
   }
 
   /// Validate a Bearer token and return the decoded claims.
   /// Returns null if the token is invalid.
   Future<AuthUser?> validateToken(String token) async {
     try {
-      final jwt = await JsonWebToken.decodeAndVerify(token, _keyStore!);
+      final jwt = await JsonWebToken.decodeAndVerify(token, _keyStore);
       final claims = jwt.claims;
 
       // Verify issuer
-      if (claims.issuer != null && claims.issuer != _issuer) {
+      if (claims.issuer != null &&
+          claims.issuer.toString() != _issuer) {
         return null;
       }
 
@@ -75,10 +77,6 @@ class AuthService {
 }
 
 class AuthUser {
-  final String id;
-  final String email;
-  final String displayName;
-  final List<String> groups;
 
   const AuthUser({
     required this.id,
@@ -86,6 +84,10 @@ class AuthUser {
     required this.displayName,
     required this.groups,
   });
+  final String id;
+  final String email;
+  final String displayName;
+  final List<String> groups;
 
   /// The first group is used as the household ID.
   /// In Authentik, users should be assigned to a household group.

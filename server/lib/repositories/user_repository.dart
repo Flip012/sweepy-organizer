@@ -1,10 +1,10 @@
-import '../models/user_profile.dart';
-import '../services/database_service.dart';
+import 'package:server/models/user_profile.dart';
+import 'package:server/services/database_service.dart';
 
 class UserRepository {
-  final DatabaseService _db;
 
   UserRepository(this._db);
+  final DatabaseService _db;
 
   Future<UserProfile?> findById(String id) async {
     final result = await _db.query(
@@ -70,7 +70,9 @@ class UserRepository {
 
   Future<List<UserProfile>> findByHousehold(String householdId) async {
     final result = await _db.query(
-      'SELECT * FROM user_profiles WHERE authentik_group_id = @householdId ORDER BY total_points DESC',
+      'SELECT * FROM user_profiles '
+      'WHERE authentik_group_id = @householdId '
+      'ORDER BY total_points DESC',
       parameters: {'householdId': householdId},
     );
     return result.map((row) => UserProfile.fromRow(row.toColumnMap())).toList();
@@ -92,7 +94,7 @@ class UserRepository {
     );
     final lastDate = profile.lastCompletedDate;
 
-    int newStreak = profile.currentStreak;
+    var newStreak = profile.currentStreak;
     if (lastDate == null) {
       newStreak = 1;
     } else {

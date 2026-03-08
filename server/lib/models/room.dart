@@ -1,18 +1,12 @@
 class Room {
-  final String id;
-  final String householdId;
-  final String name;
-  final String icon;
-  final int sortOrder;
-  final DateTime createdAt;
 
   const Room({
     required this.id,
     required this.householdId,
     required this.name,
+    required this.createdAt,
     this.icon = 'home',
     this.sortOrder = 0,
-    required this.createdAt,
   });
 
   factory Room.fromRow(Map<String, dynamic> row) {
@@ -25,6 +19,12 @@ class Room {
       createdAt: DateTime.parse(row['created_at'].toString()),
     );
   }
+  final String id;
+  final String householdId;
+  final String name;
+  final String icon;
+  final int sortOrder;
+  final DateTime createdAt;
 
   Map<String, dynamic> toJson() => {
         'id': id,

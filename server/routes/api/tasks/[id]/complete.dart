@@ -7,7 +7,10 @@ import 'package:server/services/websocket_service.dart';
 
 Future<Response> onRequest(RequestContext context, String id) async {
   if (context.request.method != HttpMethod.post) {
-    return Response.json(statusCode: 405, body: {'error': 'Method not allowed'});
+    return Response.json(
+      statusCode: 405,
+      body: {'error': 'Method not allowed'},
+    );
   }
 
   final authUser = context.read<AuthUser>();
