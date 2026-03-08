@@ -42,19 +42,12 @@ Future<Response> _handleCors(
     );
   }
 
+  // Order matters: last .use() is outermost middleware (runs first).
+  // Base services must be outermost so repositories can read them.
   final response = await handler
-      .use(provider<DatabaseService>((_) => DatabaseService.instance()))
-      .use(provider<AuthService>((_) => AuthService.instance()))
-      .use(provider<WebSocketService>((_) => WebSocketService.instance))
-      .use(provider<SchedulerService>((_) => const SchedulerService()))
       .use(
-        provider<UserRepository>(
-          (ctx) => UserRepository(ctx.read<DatabaseService>()),
-        ),
-      )
-      .use(
-        provider<RoomRepository>(
-          (ctx) => RoomRepository(ctx.read<DatabaseService>()),
+        provider<TaskLogRepository>(
+          (ctx) => TaskLogRepository(ctx.read<DatabaseService>()),
         ),
       )
       .use(
@@ -63,10 +56,19 @@ Future<Response> _handleCors(
         ),
       )
       .use(
-        provider<TaskLogRepository>(
-          (ctx) => TaskLogRepository(ctx.read<DatabaseService>()),
+        provider<RoomRepository>(
+          (ctx) => RoomRepository(ctx.read<DatabaseService>()),
         ),
       )
+      .use(
+        provider<UserRepository>(
+          (ctx) => UserRepository(ctx.read<DatabaseService>()),
+        ),
+      )
+      .use(provider<SchedulerService>((_) => const SchedulerService()))
+      .use(provider<WebSocketService>((_) => WebSocketService.instance))
+      .use(provider<AuthService>((_) => AuthService.instance()))
+      .use(provider<DatabaseService>((_) => DatabaseService.instance()))
       .call(context);
 
   return response.copyWith(
